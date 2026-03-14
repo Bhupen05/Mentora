@@ -4,66 +4,46 @@
  */
 
 import React from "react";
-import { Text, StyleSheet } from "react-native";
+import {
+  Home,
+  Search,
+  BookOpen,
+  CircleHelp,
+  User,
+  Wallet,
+  HandCoins,
+} from "lucide-react-native";
 
 interface TabIconProps {
   focused: boolean;
+  color?: string;
   size?: number;
 }
 
-export const HomeIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "🏠" : "🏡"}
-  </Text>
+export const HomeIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Home size={size} color={color} strokeWidth={2.2} />
 );
 
-export const SearchIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "🔍" : "🔎"}
-  </Text>
+export const SearchIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Search size={size} color={color} strokeWidth={2.2} />
 );
 
-export const LessonsIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "📚" : "📖"}
-  </Text>
+export const LessonsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <BookOpen size={size} color={color} strokeWidth={2.2} />
 );
 
-export const QuizzesIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "✅" : "❓"}
-  </Text>
+export const QuizzesIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <CircleHelp size={size} color={color} strokeWidth={2.2} />
 );
 
-export const ProfileIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "👤" : "👥"}
-  </Text>
+export const ProfileIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <User size={size} color={color} strokeWidth={2.2} />
 );
 
-export const EarningsIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "💰" : "💵"}
-  </Text>
+export const EarningsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <HandCoins size={size} color={color} strokeWidth={2.2} />
 );
 
-export const WalletIcon = ({ focused, size = 24 }: TabIconProps) => (
-  <Text style={[styles.icon, { fontSize: size }]}>
-    {focused ? "👛" : "💳"}
-  </Text>
+export const WalletIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Wallet size={size} color={color} strokeWidth={2.2} />
 );
-
-const styles = StyleSheet.create({
-  icon: {
-    textAlign: "center",
-  },
-});
-
-/**
- * NOTE: To replace with vector icons later, install:
- * npm install react-native-vector-icons set-value
- * Recommended packages:
- * - @react-native-vector-icons/ionicons
- * - react-native-vector-icons
- * - @expo/vector-icons
- */

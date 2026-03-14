@@ -37,6 +37,12 @@ export default function AuthLayout() {
           gestureEnabled: true,
         }}
       />
+      <Stack.Screen
+        name="forgot-password"
+        options={{
+          gestureEnabled: true,
+        }}
+      />
     </Stack>
   );
 }

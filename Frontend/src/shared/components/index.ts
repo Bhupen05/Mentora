@@ -5,6 +5,7 @@ export { Avatar } from "./Avatar";
 export { Badge } from "./Badge";
 export { Loader } from "./Loader";
 export { Header } from "./Header";
+export { CurvedTabBar } from "./CurvedTabBar";
 export {
   HomeIcon,
   SearchIcon,

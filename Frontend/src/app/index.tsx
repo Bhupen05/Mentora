@@ -1,13 +1,11 @@
 import React, { useEffect } from "react";
-import {
-  Text,
-  View,
-  StyleSheet,
-  Dimensions,
-  Animated,
-} from "react-native";
+import { Text, View, StyleSheet, Dimensions, Animated } from "react-native";
 import { useRouter } from "expo-router";
-import { useSafeAreaInsets } from "react-native-safe-area-context";
+import {
+  SafeAreaProvider,
+  SafeAreaView,
+  useSafeAreaInsets,
+} from "react-native-safe-area-context";
 import LottieView from "lottie-react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -24,7 +22,7 @@ const COLORS = {
 export default function Index() {
   const router = useRouter();
   const insets = useSafeAreaInsets();
-  
+
   // Splash screen animations
   const splashLogoScale = React.useRef(new Animated.Value(0.3)).current;
   const splashOpacity = React.useRef(new Animated.Value(1)).current;
@@ -50,40 +48,43 @@ export default function Index() {
   }, []);
 
   return (
-    <View style={styles.mainContainer}>
-      {/* Splash Screen Overlay */}
-      <Animated.View
-        style={[
-          styles.splashOverlay,
-          {
-            opacity: splashOpacity,
-            paddingTop: insets.top + 16,
-            paddingBottom: insets.bottom + 16,
-            paddingLeft: insets.left + 16,
-            paddingRight: insets.right + 16,
-          },
-        ]}
-      >
-
-        {/* Loader Container */}
-        <View
-          style={[
-            styles.splashLoaderContainer,
-            {
-              marginBottom: Math.max(insets.bottom, 20),
-            },
-          ]}
-        >
-          <LottieView
-            source={require("../../assets/animations/Welcome.json")}
-            autoPlay
-            loop
-            style={styles.lottieAnimation}
-          />
-          <Text style={styles.splashBrandName}>Mentora</Text>
+    <SafeAreaProvider>
+      <SafeAreaView style={{ flex: 1, backgroundColor: COLORS.primary }}>
+        <View style={styles.mainContainer}>
+          {/* Splash Screen Overlay */}
+          <Animated.View
+            style={[
+              styles.splashOverlay,
+              {
+                opacity: splashOpacity,
+                paddingTop: insets.top + 16,
+                paddingBottom: insets.bottom + 16,
+                paddingLeft: insets.left + 16,
+                paddingRight: insets.right + 16,
+              },
+            ]}
+          >
+            {/* Loader Container */}
+            <View
+              style={[
+                styles.splashLoaderContainer,
+                {
+                  marginBottom: Math.max(insets.bottom, 20),
+                },
+              ]}
+            >
+              <LottieView
+                source={require("../../assets/animations/Welcome.json")}
+                autoPlay
+                loop
+                style={styles.lottieAnimation}
+              />
+              <Text style={styles.splashBrandName}>Mentora</Text>
+            </View>
+          </Animated.View>
         </View>
-      </Animated.View>
-    </View>
+      </SafeAreaView>
+    </SafeAreaProvider>
   );
 }
 
@@ -93,6 +94,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 5,
   },
   /* Splash Screen Overlay */
   splashOverlay: {
@@ -112,7 +114,7 @@ const styles = StyleSheet.create({
   },
   splashLogo: {
     fontSize: 100,
-  },  
+  },
   splashBrandName: {
     fontSize: 40,
     fontWeight: "800",
