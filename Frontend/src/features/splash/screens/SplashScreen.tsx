@@ -1,7 +1,7 @@
 /**
  * Splash Screen
- * Shows logo and loading indicator while initializing the app
- * Checks user authentication state and navigates accordingly
+ * Simple animated splash with logo zoom and loading
+ * Shows home page underneath while loading
  */
 
 import React, { useEffect } from "react";
@@ -20,117 +20,108 @@ import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 export function SplashScreen() {
   const router = useRouter();
   const { isAuthenticated, userRole, checkAuth } = useAuth();
-  const logoScale = React.useRef(new Animated.Value(0)).current;
+
+  // Animations
+  const logoScale = React.useRef(new Animated.Value(0.3)).current;
+  const loaderOpacity = React.useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
-    // Animate logo entrance
-    Animated.sequence([
-      Animated.delay(200),
-      Animated.spring(logoScale, {
-        toValue: 1,
-        useNativeDriver: true,
-        bounciness: 8,
-      }),
-    ]).start();
+    // Zoom logo animation
+    Animated.timing(logoScale, {
+      toValue: 1,
+      duration: 1200,
+      useNativeDriver: true,
+    }).start();
 
-    // Check authentication and navigate after 2.5 seconds
-    const timer = setTimeout(() => {
+    // Check auth and navigate after 2 seconds
+    const navigationTimer = setTimeout(() => {
       handleNavigation();
-    }, 2500);
+    }, 2000);
 
-    return () => clearTimeout(timer);
+    return () => clearTimeout(navigationTimer);
   }, []);
 
   const handleNavigation = async () => {
     try {
-      // Verify auth status is up to date
       await checkAuth();
 
-      // Navigate based on authentication status
       if (isAuthenticated && userRole) {
-        // User is authenticated, go to role-based home
         const homeRoute = getRoleBasedHome(userRole);
         router.replace(homeRoute as any);
       } else {
-        // User is not authenticated, go to login
         router.replace("auth/login" as any);
       }
     } catch (error) {
       console.error("Error during splash screen navigation:", error);
-      // On error, go to login screen
       router.replace("auth/login" as any);
     }
   };
 
   return (
     <View style={styles.container}>
-      {/* Logo with spring animation */}
+      {/* Overlay */}
+      <View style={styles.overlay} />
+
+      {/* Animated Logo with Zoom */}
       <Animated.View
         style={[
           styles.logoContainer,
-          { transform: [{ scale: logoScale }] },
+          {
+            transform: [{ scale: logoScale }],
+          },
         ]}
       >
         <Text style={styles.logo}>🎓</Text>
-        <Text style={styles.title}>Mentora</Text>
+        <Text style={styles.brandName}>Mentora</Text>
       </Animated.View>
 
-      {/* Tagline */}
-      <Text style={styles.tagline}>Connect with Industry Leaders</Text>
-
       {/* Loading Indicator */}
-      <View style={styles.loaderContainer}>
+      <Animated.View style={[styles.loaderContainer, { opacity: loaderOpacity }]}>
         <ActivityIndicator size="large" color={COLORS.white} />
-        <Text style={styles.loadingText}>Initializing your session...</Text>
-      </View>
-
-      {/* Bottom accent */}
-      <View style={styles.accent} />
+        <Text style={styles.loadingText}>Loading...</Text>
+      </Animated.View>
     </View>
   );
 }
 
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
-    paddingHorizontal: SPACING.base,
+  },
+  overlay: {
+    position: "absolute",
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: COLORS.primary,
+    zIndex: 10,
   },
   logoContainer: {
     alignItems: "center",
-    marginBottom: SPACING["3xl"],
+    zIndex: 20,
   },
   logo: {
-    fontSize: 80,
+    fontSize: 100,
     marginBottom: SPACING.base,
   },
-  title: {
-    ...TYPOGRAPHY.h1,
+  brandName: {
+    fontSize: 40,
+    fontWeight: "800",
     color: COLORS.white,
-  },
-  tagline: {
-    ...TYPOGRAPHY.body,
-    color: "rgba(255, 255, 255, 0.85)",
-    textAlign: "center",
-    marginBottom: SPACING["3xl"],
   },
   loaderContainer: {
     alignItems: "center",
-    gap: SPACING.base,
-    marginTop: SPACING["2xl"],
+    marginTop: SPACING["3xl"],
+    zIndex: 20,
   },
   loadingText: {
-    fontSize: 13,
-    color: "rgba(255, 255, 255, 0.7)",
+    fontSize: 14,
+    color: COLORS.white,
     fontWeight: "500",
-  },
-  accent: {
-    position: "absolute",
-    bottom: 0,
-    width: "100%",
-    height: 6,
-    backgroundColor: COLORS.secondary,
+    marginTop: SPACING.base,
   },
 });

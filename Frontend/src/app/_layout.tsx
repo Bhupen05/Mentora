@@ -18,14 +18,26 @@ function RootLayoutContent() {
   const { isAuthenticated, isLoading } = useAuth();
 
   if (isLoading) {
-    // Splash screen will be shown while loading
     return (
       <Stack
         screenOptions={{
           headerShown: false,
         }}
-        initialRouteName="auth"
       >
+        <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+      </Stack>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return (
+      <Stack
+        screenOptions={{
+          headerShown: false,
+        }}
+      >
+        <Stack.Screen name="index" options={{ gestureEnabled: false }} />
+        <Stack.Screen name="landing" options={{ gestureEnabled: false }} />
         <Stack.Screen name="auth" options={{ gestureEnabled: false }} />
       </Stack>
     );
@@ -36,39 +48,10 @@ function RootLayoutContent() {
       screenOptions={{
         headerShown: false,
       }}
-      initialRouteName={isAuthenticated ? "authenticated" : "auth"}
     >
-      {/* Auth Stack - For unauthenticated users */}
-      {!isAuthenticated && (
-        <Stack.Screen
-          name="auth"
-          options={{
-            gestureEnabled: false, // Prevent swiping back from auth stack
-          }}
-        />
-      )}
-
-      {/* Role-based Stacks - For authenticated users */}
-      {isAuthenticated && (
-        <>
-          <Stack.Screen
-            name="(student)"
-            options={{ gestureEnabled: true }}
-          />
-          <Stack.Screen
-            name="(mentor)"
-            options={{ gestureEnabled: true }}
-          />
-          <Stack.Screen
-            name="(parent)"
-            options={{ gestureEnabled: true }}
-          />
-          <Stack.Screen
-            name="index"
-            options={{ gestureEnabled: true }}
-          />
-        </>
-      )}
+      <Stack.Screen name="(student)" options={{ gestureEnabled: true }} />
+      <Stack.Screen name="(mentor)" options={{ gestureEnabled: true }} />
+      <Stack.Screen name="(parent)" options={{ gestureEnabled: true }} />
     </Stack>
   );
 }
