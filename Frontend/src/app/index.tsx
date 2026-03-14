@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
   },
   splashLogo: {
     fontSize: 100,
-  },
+  },  
   splashBrandName: {
     fontSize: 40,
     fontWeight: "800",
