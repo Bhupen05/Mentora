@@ -5,9 +5,10 @@ import {
   StyleSheet,
   Dimensions,
   Animated,
-  ActivityIndicator,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import LottieView from "lottie-react-native";
 
 const { width, height } = Dimensions.get("window");
 
@@ -22,6 +23,7 @@ const COLORS = {
 
 export default function Index() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   
   // Splash screen animations
   const splashLogoScale = React.useRef(new Animated.Value(0.3)).current;
@@ -55,24 +57,30 @@ export default function Index() {
           styles.splashOverlay,
           {
             opacity: splashOpacity,
+            paddingTop: insets.top + 16,
+            paddingBottom: insets.bottom + 16,
+            paddingLeft: insets.left + 16,
+            paddingRight: insets.right + 16,
           },
         ]}
       >
-        <Animated.View
+
+        {/* Loader Container */}
+        <View
           style={[
-            styles.splashLogoContainer,
+            styles.splashLoaderContainer,
             {
-              transform: [{ scale: splashLogoScale }],
+              marginBottom: Math.max(insets.bottom, 20),
             },
           ]}
         >
-          <Text style={styles.splashLogo}>🎓</Text>
+          <LottieView
+            source={require("../../assets/animations/Welcome.json")}
+            autoPlay
+            loop
+            style={styles.lottieAnimation}
+          />
           <Text style={styles.splashBrandName}>Mentora</Text>
-        </Animated.View>
-
-        <View style={styles.splashLoaderContainer}>
-          <ActivityIndicator size="large" color={COLORS.white} />
-          <Text style={styles.splashLoadingText}>Loading...</Text>
         </View>
       </Animated.View>
     </View>
@@ -96,14 +104,14 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primary,
     justifyContent: "center",
     alignItems: "center",
+    paddingHorizontal: 24,
   },
   splashLogoContainer: {
     alignItems: "center",
-    marginBottom: 48,
+    gap: 12,
   },
   splashLogo: {
     fontSize: 100,
-    marginBottom: 16,
   },
   splashBrandName: {
     fontSize: 40,
@@ -114,10 +122,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: 12,
   },
-  splashLoadingText: {
-    fontSize: 14,
-    color: COLORS.white,
-    fontWeight: "500",
-    marginTop: 8,
+  lottieAnimation: {
+    width: 350,
+    height: 350,
   },
 });

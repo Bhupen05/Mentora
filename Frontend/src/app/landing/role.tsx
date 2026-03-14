@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -49,6 +52,7 @@ const ROLES = [
 
 export default function RoleSelection() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [selectedRole, setSelectedRole] = useState<string | null>(null);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(30)).current;
@@ -83,78 +87,98 @@ export default function RoleSelection() {
   };
 
   return (
-    <View style={styles.container}>
-      {/* Header */}
-      <Animated.View
-        style={[
-          styles.header,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
+    <SafeAreaView style={styles.safeContainer}>
+      <ScrollView
+        showsVerticalScrollIndicator={false}
+        bounces={false}
+        contentContainerStyle={{
+          paddingTop: Math.max(insets.top, 16),
+          paddingBottom: Math.max(insets.bottom, 16),
+        }}
       >
-        <Text style={styles.title}>Choose Your Role</Text>
-        <Text style={styles.subtitle}>
-          Select the option that best describes you
-        </Text>
-      </Animated.View>
-
-      {/* Role Cards */}
-      <Animated.View
-        style={[
-          styles.cardsContainer,
-          {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
-          },
-        ]}
-      >
-        {ROLES.map((role, index) => (
-          <TouchableOpacity
-            key={role.id}
+        <View
+          style={[
+            styles.container,
+            {
+              paddingLeft: Math.max(insets.left, 24),
+              paddingRight: Math.max(insets.right, 24),
+            },
+          ]}
+        >
+          {/* Header */}
+          <Animated.View
             style={[
-              styles.roleCard,
+              styles.header,
               {
-                backgroundColor: role.bgColor,
-                borderColor: selectedRole === role.id ? role.color : "transparent",
-                borderWidth: selectedRole === role.id ? 3 : 1,
-                borderStyle: "solid",
-                borderBottomColor:
-                  selectedRole === role.id ? role.color : COLORS.light,
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
               },
             ]}
-            onPress={() => handleSelectRole(role.id)}
-            activeOpacity={0.7}
           >
-            {/* Checkmark */}
-            {selectedRole === role.id && (
-              <View style={[styles.checkmark, { backgroundColor: role.color }]}>
-                <Text style={styles.checkmarkText}>✓</Text>
-              </View>
-            )}
-
-            {/* Icon */}
-            <Text style={styles.icon}>{role.icon}</Text>
-
-            {/* Title */}
-            <Text style={[styles.roleTitle, { color: role.color }]}>
-              {role.title}
+            <Text style={styles.title}>Choose Your Role</Text>
+            <Text style={styles.subtitle}>
+              Select the option that best describes you
             </Text>
+          </Animated.View>
 
-            {/* Description */}
-            <Text style={styles.roleDescription}>{role.description}</Text>
-          </TouchableOpacity>
-        ))}
-      </Animated.View>
+          {/* Role Cards */}
+          <Animated.View
+            style={[
+              styles.cardsContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            {ROLES.map((role, index) => (
+              <TouchableOpacity
+                key={role.id}
+                style={[
+                  styles.roleCard,
+                  {
+                    backgroundColor: role.bgColor,
+                    borderColor: selectedRole === role.id ? role.color : "transparent",
+                    borderWidth: selectedRole === role.id ? 3 : 1,
+                    borderStyle: "solid",
+                    borderBottomColor:
+                      selectedRole === role.id ? role.color : COLORS.light,
+                  },
+                ]}
+                onPress={() => handleSelectRole(role.id)}
+                activeOpacity={0.7}
+              >
+                {/* Checkmark */}
+                {selectedRole === role.id && (
+                  <View style={[styles.checkmark, { backgroundColor: role.color }]}>
+                    <Text style={styles.checkmarkText}>✓</Text>
+                  </View>
+                )}
+
+                {/* Icon */}
+                <Text style={styles.icon}>{role.icon}</Text>
+
+                {/* Title */}
+                <Text style={[styles.roleTitle, { color: role.color }]}>
+                  {role.title}
+                </Text>
+
+                {/* Description */}
+                <Text style={styles.roleDescription}>{role.description}</Text>
+              </TouchableOpacity>
+            ))}
+          </Animated.View>
+        </View>
+      </ScrollView>
 
       {/* Bottom Buttons */}
       <Animated.View
         style={[
           styles.buttonContainer,
           {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
+            paddingBottom: Math.max(insets.bottom, 16),
+            paddingLeft: Math.max(insets.left, 24),
+            paddingRight: Math.max(insets.right, 24),
           },
         ]}
       >
@@ -178,18 +202,18 @@ export default function RoleSelection() {
           </Text>
         </TouchableOpacity>
       </Animated.View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  container: {
     paddingHorizontal: 24,
-    paddingTop: 56,
-    paddingBottom: 48,
-    justifyContent: "space-between",
+    paddingVertical: 24,
   },
   header: {
     marginBottom: 48,
@@ -265,7 +289,11 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     gap: 14,
-    marginTop: 32,
+    paddingHorizontal: 24,
+    paddingVertical: 16,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.light,
   },
   backButton: {
     flex: 0.3,

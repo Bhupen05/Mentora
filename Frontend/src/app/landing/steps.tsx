@@ -10,6 +10,7 @@ import {
   SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -48,6 +49,7 @@ const STEPS = [
 
 export default function Steps() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [currentStep, setCurrentStep] = useState(0);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(50)).current;
@@ -92,7 +94,15 @@ export default function Steps() {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
         {/* Header with Skip Button */}
-        <View style={styles.header}>
+        <View
+          style={[
+            styles.header,
+            {
+              paddingTop: Math.max(insets.top, 12),
+              paddingHorizontal: Math.max(insets.left + insets.right + 24, 24),
+            },
+          ]}
+        >
           <View style={styles.progressContainer}>
             <View style={styles.progressBar}>
               <Animated.View
@@ -159,7 +169,15 @@ export default function Steps() {
       </ScrollView>
 
       {/* Bottom Buttons */}
-      <View style={styles.buttonContainer}>
+      <View
+        style={[
+          styles.buttonContainer,
+          {
+            paddingBottom: Math.max(insets.bottom, 16),
+            paddingHorizontal: Math.max(insets.left + insets.right + 24, 24),
+          },
+        ]}
+      >
         <TouchableOpacity
           style={[styles.button, styles.secondaryButton]}
           onPress={handleSkip}
@@ -191,8 +209,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingHorizontal: 24,
-    paddingTop: 16,
     paddingBottom: 20,
   },
   progressContainer: {

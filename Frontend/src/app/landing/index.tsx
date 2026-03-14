@@ -6,8 +6,11 @@ import {
   TouchableOpacity,
   Dimensions,
   Animated,
+  ScrollView,
+  SafeAreaView,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 const { width, height } = Dimensions.get("window");
 
@@ -46,6 +49,7 @@ const STEPS = [
 
 export default function Steps() {
   const router = useRouter();
+  const insets = useSafeAreaInsets();
   const [currentStep, setCurrentStep] = useState(0);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const slideAnim = React.useRef(new Animated.Value(50)).current;
@@ -87,71 +91,94 @@ export default function Steps() {
   const progress = ((currentStep + 1) / STEPS.length) * 100;
 
   return (
-    <View style={styles.container}>
-      {/* Header with Skip Button */}
-      <View style={styles.header}>
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <Animated.View
-              style={[
-                styles.progressFill,
-                {
-                  width: `${progress}%`,
-                  backgroundColor: step.color,
-                },
-              ]}
-            />
+    <SafeAreaView style={styles.safeContainer}>
+      <ScrollView showsVerticalScrollIndicator={false} bounces={false}>
+        <View
+          style={[
+            styles.container,
+            {
+              paddingTop: Math.max(insets.top, 16),
+              paddingBottom: Math.max(insets.bottom, 16),
+              paddingLeft: Math.max(insets.left, 24),
+              paddingRight: Math.max(insets.right, 24),
+            },
+          ]}
+        >
+          {/* Header with Skip Button */}
+          <View style={styles.header}>
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
+                <Animated.View
+                  style={[
+                    styles.progressFill,
+                    {
+                      width: `${progress}%`,
+                      backgroundColor: step.color,
+                    },
+                  ]}
+                />
+              </View>
+              <Text style={styles.progressText}>
+                {currentStep + 1} / {STEPS.length}
+              </Text>
+            </View>
+            <TouchableOpacity onPress={handleSkip}>
+              <Text style={styles.skipButton}>Skip</Text>
+            </TouchableOpacity>
           </View>
-          <Text style={styles.progressText}>
-            {currentStep + 1} / {STEPS.length}
-          </Text>
-        </View>
-        <TouchableOpacity onPress={handleSkip}>
-          <Text style={styles.skipButton}>Skip</Text>
-        </TouchableOpacity>
-      </View>
 
-      {/* Step Content */}
-      <Animated.View
+          {/* Step Content */}
+          <Animated.View
+            style={[
+              styles.contentContainer,
+              {
+                opacity: fadeAnim,
+                transform: [{ translateY: slideAnim }],
+              },
+            ]}
+          >
+            {/* Icon */}
+            <View style={[styles.iconContainer, { backgroundColor: step.color }]}>
+              <Text style={styles.icon}>{step.icon}</Text>
+            </View>
+
+            {/* Step Title */}
+            <Text style={styles.title}>{step.title}</Text>
+
+            {/* Step Description */}
+            <Text style={styles.description}>{step.description}</Text>
+
+            {/* Step Indicators */}
+            <View style={styles.dotsContainer}>
+              {STEPS.map((_, index) => (
+                <Animated.View
+                  key={index}
+                  style={[
+                    styles.dot,
+                    {
+                      backgroundColor:
+                        index === currentStep ? step.color : COLORS.gray,
+                      width: index === currentStep ? 32 : 12,
+                    },
+                  ]}
+                />
+              ))}
+            </View>
+          </Animated.View>
+        </View>
+      </ScrollView>
+
+      {/* Bottom Buttons */}
+      <View
         style={[
-          styles.contentContainer,
+          styles.buttonContainer,
           {
-            opacity: fadeAnim,
-            transform: [{ translateY: slideAnim }],
+            paddingBottom: Math.max(insets.bottom, 16),
+            paddingLeft: Math.max(insets.left, 24),
+            paddingRight: Math.max(insets.right, 24),
           },
         ]}
       >
-        {/* Icon */}
-        <View style={[styles.iconContainer, { backgroundColor: step.color }]}>
-          <Text style={styles.icon}>{step.icon}</Text>
-        </View>
-
-        {/* Step Title */}
-        <Text style={styles.title}>{step.title}</Text>
-
-        {/* Step Description */}
-        <Text style={styles.description}>{step.description}</Text>
-
-        {/* Step Indicators */}
-        <View style={styles.dotsContainer}>
-          {STEPS.map((_, index) => (
-            <Animated.View
-              key={index}
-              style={[
-                styles.dot,
-                {
-                  backgroundColor:
-                    index === currentStep ? step.color : COLORS.gray,
-                  width: index === currentStep ? 32 : 12,
-                },
-              ]}
-            />
-          ))}
-        </View>
-      </Animated.View>
-
-      {/* Bottom Buttons */}
-      <View style={styles.buttonContainer}>
         <TouchableOpacity
           style={[styles.button, styles.secondaryButton]}
           onPress={handleSkip}
@@ -170,17 +197,19 @@ export default function Steps() {
           </Text>
         </TouchableOpacity>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  safeContainer: {
     flex: 1,
     backgroundColor: COLORS.white,
+  },
+  container: {
+    minHeight: height * 0.75,
     paddingHorizontal: 24,
-    paddingTop: 48,
-    paddingBottom: 32,
+  
   },
   header: {
     flexDirection: "row",
@@ -258,6 +287,12 @@ const styles = StyleSheet.create({
   buttonContainer: {
     flexDirection: "row",
     gap: 12,
+    paddingHorizontal: 24,
+    paddingTop: 16,
+    paddingBottom: 16,
+    backgroundColor: COLORS.white,
+    borderTopWidth: 1,
+    borderTopColor: COLORS.light,
   },
   button: {
     flex: 1,
