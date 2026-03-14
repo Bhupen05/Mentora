@@ -1,0 +1,14 @@
+/**
+ * Student Lessons Feature Routes
+ */
+
+import { Stack } from "expo-router";
+
+export default function LessonsLayout() {
+  return (
+    <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="[lessonId]" />
+    </Stack>
+  );
+}
