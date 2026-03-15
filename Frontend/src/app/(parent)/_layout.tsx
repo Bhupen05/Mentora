@@ -11,7 +11,7 @@ export default function ParentLayout() {
       screenOptions={{
         headerShown: true,
         headerStyle: styles.header,
-        headerTintColor: COLORS.dark,
+        headerTintColor: COLORS.white,
         headerTitleStyle: styles.headerTitle,
       }}
     >
@@ -24,7 +24,7 @@ export default function ParentLayout() {
             <HomeIcon
               focused={focused}
               size={18}
-              color={focused ? COLORS.dark : COLORS.gray200}
+              color={focused ? COLORS.primaryDark : COLORS.dark}
             />
           ),
         }}
@@ -39,7 +39,7 @@ export default function ParentLayout() {
             <WalletIcon
               focused={focused}
               size={18}
-              color={focused ? COLORS.dark : COLORS.gray200}
+              color={focused ? COLORS.primaryDark : COLORS.gray200}
             />
           ),
         }}
@@ -54,7 +54,7 @@ export default function ParentLayout() {
             <ProfileIcon
               focused={focused}
               size={18}
-              color={focused ? COLORS.dark : COLORS.gray200}
+              color={focused ? COLORS.primaryDark : COLORS.gray200}
             />
           ),
         }}
@@ -72,6 +72,6 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 18,
     fontWeight: "600",
-    color: COLORS.dark,
+    color: COLORS.primaryDark,
   },
 });

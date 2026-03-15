@@ -7,17 +7,16 @@
 import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
 import { COLORS, SPACING } from "@/shared/theme";
-import { HomeIcon, EarningsIcon, ProfileIcon } from "@/shared/components/TabIcons";
+import { HomeIcon, EarningsIcon, ProfileIcon, CurvedTabBar } from "@/shared/components";
 
 export default function MentorLayout() {
   return (
     <Tabs
+      tabBar={(props) => <CurvedTabBar {...props} />}
       screenOptions={{
         headerShown: true,
         tabBarActiveTintColor: COLORS.primary,
-        tabBarInactiveTintColor: COLORS.gray400,
-        tabBarStyle: styles.tabBar,
-        tabBarLabelStyle: styles.tabBarLabel,
+        tabBarInactiveTintColor: COLORS.dark,
         headerStyle: styles.header,
         headerTintColor: COLORS.dark,
         headerTitleStyle: styles.headerTitle,
@@ -60,17 +59,6 @@ export default function MentorLayout() {
 }
 
 const styles = StyleSheet.create({
-  tabBar: {
-    borderTopColor: COLORS.gray200,
-    borderTopWidth: 1,
-    paddingBottom: SPACING.xs,
-    paddingTop: SPACING.xs,
-    height: 60,
-  },
-  tabBarLabel: {
-    fontSize: 12,
-    marginTop: -SPACING.xs,
-  },
   header: {
     backgroundColor: COLORS.white,
     borderBottomColor: COLORS.gray200,
