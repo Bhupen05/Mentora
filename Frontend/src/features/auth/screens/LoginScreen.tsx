@@ -34,6 +34,16 @@ export function LoginScreen() {
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
 
+  const getRoleFromEmail = (value: string): UserRole | null => {
+    const normalizedEmail = value.trim().toLowerCase();
+
+    if (normalizedEmail === "student@example.com") return "student";
+    if (normalizedEmail === "parent@example.com") return "parent";
+    if (normalizedEmail === "mentor@example.com") return "mentor";
+
+    return null;
+  };
+
   const handleLogin = async () => {
     const newErrors = { email: "", password: "" };
 
@@ -47,11 +57,23 @@ export function LoginScreen() {
     setErrors(newErrors);
 
     if (!newErrors.email && !newErrors.password) {
+      const roleFromEmail = getRoleFromEmail(email);
+
+      if (!roleFromEmail) {
+        setErrors({
+          email: "Use student@example.com, parent@example.com, or mentor@example.com",
+          password: "",
+        });
+        return;
+      }
+
       setLoading(true);
       try {
-        await login(email, password, selectedRole);
+        await login(email, password, roleFromEmail);
 
-        const homeRoute = getRoleBasedHome(selectedRole);
+        setSelectedRole(roleFromEmail);
+
+        const homeRoute = getRoleBasedHome(roleFromEmail);
         router.replace(homeRoute as any);
       } catch (error) {
         console.error("Login error:", error);

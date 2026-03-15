@@ -9,79 +9,79 @@ type ScheduleView = "Daily" | "Weekly" | "Monthly";
 type ScheduleItem = {
 	id: string;
 	title: string;
-	student: string;
+	mentor: string;
 	time: string;
 	dateLabel: string;
-	status: "Confirmed" | "Pending";
+	status: "Upcoming" | "Completed";
 };
 
 const VIEWS: ScheduleView[] = ["Daily", "Weekly", "Monthly"];
 
-export function ParentScheduleScreen() {
+export function StudentScheduleScreen() {
 	const [selectedView, setSelectedView] = useState<ScheduleView>("Daily");
 
 	const scheduleByView: Record<ScheduleView, ScheduleItem[]> = useMemo(
 		() => ({
 			Daily: [
 				{
-					id: "p-d-1",
-					title: "Math Revision",
-					student: "Ethan",
-					time: "4:00 PM - 5:00 PM",
+					id: "s-d-1",
+					title: "JavaScript Basics",
+					mentor: "Sarah Chen",
+					time: "3:00 PM - 4:00 PM",
 					dateLabel: "Today",
-					status: "Confirmed",
+					status: "Upcoming",
 				},
 				{
-					id: "p-d-2",
-					title: "Science Practice",
-					student: "Ava",
-					time: "6:30 PM - 7:15 PM",
+					id: "s-d-2",
+					title: "English Grammar",
+					mentor: "Daniel Kim",
+					time: "6:00 PM - 6:45 PM",
 					dateLabel: "Today",
-					status: "Pending",
+					status: "Upcoming",
 				},
 			],
 			Weekly: [
 				{
-					id: "p-w-1",
-					title: "English Writing",
-					student: "Ethan",
-					time: "Mon • 5:00 PM",
+					id: "s-w-1",
+					title: "React Practice",
+					mentor: "Amelia Wright",
+					time: "Mon • 5:30 PM",
 					dateLabel: "This Week",
-					status: "Confirmed",
+					status: "Upcoming",
 				},
 				{
-					id: "p-w-2",
-					title: "Coding Basics",
-					student: "Ava",
-					time: "Wed • 7:00 PM",
+					id: "s-w-2",
+					title: "Math Drills",
+					mentor: "Victor Flores",
+					time: "Wed • 4:00 PM",
 					dateLabel: "This Week",
-					status: "Confirmed",
+					status: "Upcoming",
 				},
 				{
-					id: "p-w-3",
-					title: "Physics Concepts",
-					student: "Ethan",
-					time: "Fri • 4:30 PM",
+					id: "s-w-3",
+					title: "Science Quiz Prep",
+					mentor: "Noah Patel",
+					time: "Fri • 6:15 PM",
 					dateLabel: "This Week",
-					status: "Pending",
+					status: "Completed",
 				},
 			],
 			Monthly: [
 				{
-					id: "p-m-1",
-					title: "Exam Prep Block",
-					student: "Ethan",
-					time: "8 sessions",
+					id: "s-m-1",
+					title: "Full Stack Track",
+					mentor: "Sarah Chen",
+					time: "10 sessions",
 					dateLabel: "March",
-					status: "Confirmed",
+					status: "Upcoming",
 				},
 				{
-					id: "p-m-2",
-					title: "Language Improvement",
-					student: "Ava",
-					time: "6 sessions",
+					id: "s-m-2",
+					title: "Exam Booster",
+					mentor: "Victor Flores",
+					time: "7 sessions",
 					dateLabel: "March",
-					status: "Confirmed",
+					status: "Completed",
 				},
 			],
 		}),
@@ -92,12 +92,8 @@ export function ParentScheduleScreen() {
 
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.content}>
-			<View style={styles.heroSection}>
-				<Text style={styles.title}>Parent Schedule</Text>
-				<Text style={styles.subtitle}>Track sessions by day, week, or month.</Text>
-			</View>
-
-			<View style={styles.mainSection}>
+			<Text style={styles.title}>Student Schedule</Text>
+			<Text style={styles.subtitle}>Plan your lessons by day, week, and month.</Text>
 
 			<View style={styles.segmentedWrap}>
 				{VIEWS.map((view) => {
@@ -120,19 +116,19 @@ export function ParentScheduleScreen() {
 					<CalendarDays size={16} color={COLORS.primaryDark} strokeWidth={2.2} />
 					<Text style={styles.summaryText}>{selectedView} Plan</Text>
 				</View>
-				<Text style={styles.summaryCount}>{currentItems.length} sessions</Text>
+				<Text style={styles.summaryCount}>{currentItems.length} lessons</Text>
 			</View>
 
 			{currentItems.map((item) => (
 				<Card key={item.id}>
 					<View style={styles.itemHeader}>
 						<Text style={styles.itemTitle}>{item.title}</Text>
-						<Badge label={item.status} variant={item.status === "Confirmed" ? "success" : "warning"} />
+						<Badge label={item.status} variant={item.status === "Upcoming" ? "primary" : "success"} />
 					</View>
 
 					<View style={styles.metaRow}>
 						<UserRound size={14} color={COLORS.gray500} strokeWidth={2.2} />
-						<Text style={styles.metaText}>{item.student}</Text>
+						<Text style={styles.metaText}>{item.mentor}</Text>
 					</View>
 
 					<View style={styles.metaRow}>
@@ -143,7 +139,6 @@ export function ParentScheduleScreen() {
 					<Text style={styles.dateText}>{item.dateLabel}</Text>
 				</Card>
 			))}
-			</View>
 		</ScrollView>
 	);
 }
@@ -154,27 +149,17 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.light,
 	},
 	content: {
+		paddingHorizontal: SPACING.base,
+		paddingTop: SPACING.base,
 		paddingBottom: SPACING["6xl"],
 	},
-	heroSection: {
-		paddingHorizontal: SPACING.base,
-		paddingTop: SPACING.xl,
-		paddingBottom: SPACING.lg,
-		backgroundColor: COLORS.primaryDark,
-		borderBottomLeftRadius: 24,
-		borderBottomRightRadius: 24,
-	},
-	mainSection: {
-		paddingHorizontal: SPACING.base,
-		marginTop: -SPACING.sm,
-	},
 	title: {
-		...TYPOGRAPHY.h2,
-		color: COLORS.white,
+		...TYPOGRAPHY.h3,
+		color: COLORS.dark,
 	},
 	subtitle: {
-		...TYPOGRAPHY.body,
-		color: "rgba(255, 255, 255, 0.85)",
+		...TYPOGRAPHY.bodySmall,
+		color: COLORS.gray600,
 		marginTop: SPACING.xs,
 		marginBottom: SPACING.base,
 	},

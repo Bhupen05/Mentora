@@ -57,20 +57,20 @@ export function CurvedTabBar({ state, descriptors, navigation }: BottomTabBarPro
 
   return (
     <View
-      style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, SPACING.md) }]}
+      style={[styles.wrapper, { paddingBottom: Math.max(insets.bottom, SPACING.sm) }]}
       pointerEvents="box-none"
     >
       <View
         style={styles.container}
         onLayout={({ nativeEvent }) => setBarW(nativeEvent.layout.width)}
       >
-        <Animated.View
+        {/* <Animated.View
           pointerEvents="none"
           style={[
             styles.bump,
             { transform: [{ translateX: bubbleX }] },
           ]}
-        />
+        /> */}
 
         <View style={styles.tabsRow}>
           {state.routes.map((route, index) => {
@@ -149,13 +149,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     left: 0,
     right: 0,
-    bottom: SPACING.lg,
+    bottom: 0,
     alignItems: "center",
     paddingHorizontal: H_PAD,
   },
   container: {
     width: "100%",
-    backgroundColor: "#151515",
+    backgroundColor: "#fff",
     borderRadius: RADIUS,
     paddingHorizontal: H_PAD,
     paddingVertical: SPACING.sm,
@@ -166,20 +166,20 @@ const styles = StyleSheet.create({
     elevation: 16,
     overflow: "visible",
   },
-  bump: {
-    position: "absolute",
-    top: -BUMP / 2,
-    width: BUMP,
-    height: BUMP,
-    borderRadius: BUMP / 2,
-    backgroundColor: "#6BFF38",
-    shadowColor: "#6BFF38",
-    shadowOffset: { width: 0, height: 6 },
-    shadowOpacity: 0.45,
-    shadowRadius: 12,
-    elevation: 16,
-    zIndex: 2,
-  },
+  // bump: {
+  //   position: "absolute",
+  //   top: -BUMP / 2,
+  //   width: BUMP,
+  //   height: BUMP,
+  //   borderRadius: BUMP / 2,
+  //   // backgroundColor: "#6BFF38",
+  //   // shadowColor: "#6BFF38",
+  //   shadowOffset: { width: 0, height: 6 },
+  //   shadowOpacity: 0.45,
+  //   shadowRadius: 12,
+  //   elevation: 16,
+  //   zIndex: 2,
+  // },
   tabsRow: {
     flexDirection: "row",
     justifyContent: "space-between",
@@ -197,13 +197,17 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  
   iconWrapperFocused: {
     backgroundColor: "transparent",
+    shadowOffset: { width: 0, height: 6 },
+    shadowOpacity: 0.45,
+    shadowRadius: 12,
   },
   label: {
-    marginTop: LABEL_GAP / 2,
-    fontSize: 11,
+    marginTop: LABEL_GAP / 20,
+    fontSize: 12,
     fontWeight: "600",
-    color: COLORS.white,
+    color: COLORS.primaryDark,
   },
 });

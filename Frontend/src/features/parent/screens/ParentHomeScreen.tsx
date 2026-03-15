@@ -130,7 +130,7 @@ export function ParentHomeScreen() {
 			style={styles.container}
 			contentContainerStyle={[
 				styles.contentContainer,
-				{ paddingBottom: SPACING["6xl"] + insets.bottom + 90 },
+				{ paddingBottom: SPACING["4xl"] + insets.bottom + 10 },
 			]}
 			showsVerticalScrollIndicator={false}
 		>
@@ -328,7 +328,7 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.light,
 	},
 	contentContainer: {
-		paddingBottom: SPACING["6xl"],
+		paddingBottom: SPACING["3xl"],
 	},
 	heroSection: {
 		paddingHorizontal: SPACING.base,

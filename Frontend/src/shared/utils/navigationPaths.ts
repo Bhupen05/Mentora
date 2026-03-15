@@ -29,7 +29,7 @@ export const NavigationPaths = {
 
   // Parent routes
   PARENT: {
-    DASHBOARD: "(parent)/dashboard",
+    DASHBOARD: "(parent)/home",
     WALLET: "(parent)/wallet",
     PROFILE: "(parent)/profile",
   },

@@ -154,8 +154,12 @@ export function ParentBrowseScreen() {
 
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.content}>
-			<Text style={styles.title}>Browse Lessons</Text>
-			<Text style={styles.subtitle}>Find the best lesson for your child and book instantly.</Text>
+			<View style={styles.heroSection}>
+				<Text style={styles.title}>Browse Lessons</Text>
+				<Text style={styles.subtitle}>Find the best lesson for your child and book instantly.</Text>
+			</View>
+
+			<View style={styles.mainSection}>
 
 			<View style={styles.searchRow}>
 				<View style={styles.searchBox}>
@@ -335,6 +339,7 @@ export function ParentBrowseScreen() {
 					</Text>
 				</Card>
 			) : null}
+			</View>
 		</ScrollView>
 	);
 }
@@ -345,17 +350,27 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.light,
 	},
 	content: {
-		paddingHorizontal: SPACING.base,
-		paddingTop: SPACING.base,
 		paddingBottom: SPACING["6xl"],
 	},
+	heroSection: {
+		paddingHorizontal: SPACING.base,
+		paddingTop: SPACING.xl,
+		paddingBottom: SPACING.lg,
+		backgroundColor: COLORS.primaryDark,
+		borderBottomLeftRadius: 24,
+		borderBottomRightRadius: 24,
+	},
+	mainSection: {
+		paddingHorizontal: SPACING.base,
+		marginTop: -SPACING.sm,
+	},
 	title: {
-		...TYPOGRAPHY.h3,
-		color: COLORS.dark,
+		...TYPOGRAPHY.h2,
+		color: COLORS.white,
 	},
 	subtitle: {
-		...TYPOGRAPHY.bodySmall,
-		color: COLORS.gray600,
+		...TYPOGRAPHY.body,
+		color: "rgba(255, 255, 255, 0.85)",
 		marginTop: SPACING.xs,
 		marginBottom: SPACING.base,
 	},

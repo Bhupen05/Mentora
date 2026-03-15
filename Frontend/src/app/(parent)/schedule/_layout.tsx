@@ -4,6 +4,6 @@
 
 import { Slot } from "expo-router";
 
-export default function ProfileLayout() {
+export default function ScheduleLayout() {
   return <Slot />;
 }
