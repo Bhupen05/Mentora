@@ -4,11 +4,25 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 import { Card, Badge, Button } from "@/shared/components";
 
+type Mentor = {
+  id: string;
+  name: string;
+  image: string | null;
+  initials: string;
+  specialty: string;
+  experience: number;
+  rating: number;
+  reviews: number;
+  rate: number;
+  bio: string;
+  availableSlots: string[];
+};
+
 export function ParentMentorProfileScreen() {
   const router = useRouter();
   const { mentorId } = useLocalSearchParams<{ mentorId?: string }>();
 
-  const mentors = {
+  const mentors: Record<string, Mentor> = {
     l1: {
       id: "l1",
       name: "Michael Lee",
@@ -61,7 +75,7 @@ export function ParentMentorProfileScreen() {
       bio: "Writing and communication mentor helping students improve clarity and structure.",
       availableSlots: ["Fri • 4:30 PM", "Sat • 10:30 AM", "Mon • 6:00 PM"],
     },
-  } as const;
+  };
 
   const mentor = mentors[mentorId as keyof typeof mentors] ?? mentors.l1;
 
