@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import { CalendarDays, Clock3, UserRound } from "lucide-react-native";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 import { Badge, Card } from "@/shared/components";
@@ -10,6 +10,8 @@ type ScheduleItem = {
 	id: string;
 	title: string;
 	mentor: string;
+	mentorImage: string | null;
+	initials: string;
 	time: string;
 	dateLabel: string;
 	status: "Upcoming" | "Completed";
@@ -27,6 +29,8 @@ export function StudentScheduleScreen() {
 					id: "s-d-1",
 					title: "JavaScript Basics",
 					mentor: "Sarah Chen",
+					mentorImage: null,
+					initials: "SC",
 					time: "3:00 PM - 4:00 PM",
 					dateLabel: "Today",
 					status: "Upcoming",
@@ -35,6 +39,8 @@ export function StudentScheduleScreen() {
 					id: "s-d-2",
 					title: "English Grammar",
 					mentor: "Daniel Kim",
+					mentorImage: null,
+					initials: "DK",
 					time: "6:00 PM - 6:45 PM",
 					dateLabel: "Today",
 					status: "Upcoming",
@@ -45,6 +51,8 @@ export function StudentScheduleScreen() {
 					id: "s-w-1",
 					title: "React Practice",
 					mentor: "Amelia Wright",
+					mentorImage: null,
+					initials: "AW",
 					time: "Mon • 5:30 PM",
 					dateLabel: "This Week",
 					status: "Upcoming",
@@ -53,6 +61,8 @@ export function StudentScheduleScreen() {
 					id: "s-w-2",
 					title: "Math Drills",
 					mentor: "Victor Flores",
+					mentorImage: null,
+					initials: "VF",
 					time: "Wed • 4:00 PM",
 					dateLabel: "This Week",
 					status: "Upcoming",
@@ -61,6 +71,8 @@ export function StudentScheduleScreen() {
 					id: "s-w-3",
 					title: "Science Quiz Prep",
 					mentor: "Noah Patel",
+					mentorImage: null,
+					initials: "NP",
 					time: "Fri • 6:15 PM",
 					dateLabel: "This Week",
 					status: "Completed",
@@ -71,6 +83,8 @@ export function StudentScheduleScreen() {
 					id: "s-m-1",
 					title: "Full Stack Track",
 					mentor: "Sarah Chen",
+					mentorImage: null,
+					initials: "SC",
 					time: "10 sessions",
 					dateLabel: "March",
 					status: "Upcoming",
@@ -79,6 +93,8 @@ export function StudentScheduleScreen() {
 					id: "s-m-2",
 					title: "Exam Booster",
 					mentor: "Victor Flores",
+					mentorImage: null,
+					initials: "VF",
 					time: "7 sessions",
 					dateLabel: "March",
 					status: "Completed",
@@ -92,8 +108,12 @@ export function StudentScheduleScreen() {
 
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.content}>
-			<Text style={styles.title}>Student Schedule</Text>
-			<Text style={styles.subtitle}>Plan your lessons by day, week, and month.</Text>
+			<View style={styles.heroSection}>
+				<Text style={styles.title}>Student Schedule</Text>
+				<Text style={styles.subtitle}>Plan your lessons by day, week, and month.</Text>
+			</View>
+
+			<View style={styles.mainSection}>
 
 			<View style={styles.segmentedWrap}>
 				{VIEWS.map((view) => {
@@ -127,7 +147,13 @@ export function StudentScheduleScreen() {
 					</View>
 
 					<View style={styles.metaRow}>
-						<UserRound size={14} color={COLORS.gray500} strokeWidth={2.2} />
+					<View style={styles.mentorAvatarWrap}>
+						{item.mentorImage ? (
+							<Image source={{ uri: item.mentorImage }} style={styles.mentorAvatar} />
+						) : (
+							<Text style={styles.mentorAvatarText}>{item.initials}</Text>
+						)}
+					</View>
 						<Text style={styles.metaText}>{item.mentor}</Text>
 					</View>
 
@@ -139,6 +165,7 @@ export function StudentScheduleScreen() {
 					<Text style={styles.dateText}>{item.dateLabel}</Text>
 				</Card>
 			))}
+			</View>
 		</ScrollView>
 	);
 }
@@ -149,17 +176,27 @@ const styles = StyleSheet.create({
 		backgroundColor: COLORS.light,
 	},
 	content: {
-		paddingHorizontal: SPACING.base,
-		paddingTop: SPACING.base,
 		paddingBottom: SPACING["6xl"],
 	},
+	heroSection: {
+		paddingHorizontal: SPACING.base,
+		paddingTop: SPACING.xl,
+		paddingBottom: SPACING.lg,
+		backgroundColor: COLORS.primaryDark,
+		borderBottomLeftRadius: 24,
+		borderBottomRightRadius: 24,
+	},
+	mainSection: {
+		paddingHorizontal: SPACING.base,
+		marginTop: -SPACING.sm,
+	},
 	title: {
-		...TYPOGRAPHY.h3,
-		color: COLORS.dark,
+		...TYPOGRAPHY.h2,
+		color: COLORS.white,
 	},
 	subtitle: {
-		...TYPOGRAPHY.bodySmall,
-		color: COLORS.gray600,
+		...TYPOGRAPHY.body,
+		color: "rgba(255, 255, 255, 0.85)",
 		marginTop: SPACING.xs,
 		marginBottom: SPACING.base,
 	},
@@ -234,6 +271,25 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: SPACING.xs,
+	},
+	mentorAvatarWrap: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#e0e7ff",
+	},
+	mentorAvatar: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+	},
+	mentorAvatarText: {
+		...TYPOGRAPHY.bodySmall,
+		color: COLORS.primaryDark,
+		fontWeight: "700",
+		fontSize: 11,
 	},
 	metaText: {
 		...TYPOGRAPHY.caption,

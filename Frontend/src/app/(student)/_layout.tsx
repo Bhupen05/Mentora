@@ -1,7 +1,7 @@
 /**
  * Student Stack Navigation
  * Bottom tab navigation for student role with feature screens
- * Routes: Dashboard, Search Mentors, My Lessons, Quizzes, Profile
+ * Routes: Dashboard (with integrated progress), Search Mentors, My Lessons, Quizzes, Profile
  */
 
 import { Tabs } from "expo-router";
@@ -14,6 +14,7 @@ import {
   LessonsIcon,
   QuizzesIcon,
   ProfileIcon,
+  MessagesIcon,
 } from "@/shared/components/TabIcons";
 
 export default function StudentLayout() {
@@ -21,12 +22,10 @@ export default function StudentLayout() {
     <Tabs
       tabBar={(props) => <CurvedTabBar {...props} />}
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.gray400,
-        headerStyle: styles.header,
-        headerTintColor: COLORS.dark,
-        headerTitleStyle: styles.headerTitle,
+        sceneStyle: styles.scene,
       }}
     >
       {/* Dashboard Tab */}
@@ -83,19 +82,13 @@ export default function StudentLayout() {
           tabBarIcon: ProfileIcon,
         }}
       />
+
     </Tabs>
   );
 }
 
 const styles = StyleSheet.create({
-  header: {
-    backgroundColor: COLORS.white,
-    borderBottomColor: COLORS.gray200,
-    borderBottomWidth: 1,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-    color: COLORS.dark,
+  scene: {
+    paddingBottom: 60,
   },
 });

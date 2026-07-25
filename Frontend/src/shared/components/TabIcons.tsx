@@ -12,6 +12,14 @@ import {
   User,
   Wallet,
   HandCoins,
+  Users,
+  Calendar,
+  MessageSquare,
+  BarChart3,
+  Target,
+  TrendingUp,
+  FileText,
+  Award,
 } from "lucide-react-native";
 
 interface TabIconProps {
@@ -46,4 +54,36 @@ export const EarningsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => 
 
 export const WalletIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
   <Wallet size={size} color={color} strokeWidth={2.2} />
+);
+
+export const StudentsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Users size={size} color={color} strokeWidth={2.2} />
+);
+
+export const ScheduleIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Calendar size={size} color={color} strokeWidth={2.2} />
+);
+
+export const MessagesIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <MessageSquare size={size} color={color} strokeWidth={2.2} />
+);
+
+export const AnalyticsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <BarChart3 size={size} color={color} strokeWidth={2.2} />
+);
+
+export const GoalsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Target size={size} color={color} strokeWidth={2.2} />
+);
+
+export const ProgressIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <TrendingUp size={size} color={color} strokeWidth={2.2} />
+);
+
+export const ResourcesIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <FileText size={size} color={color} strokeWidth={2.2} />
+);
+
+export const AchievementsIcon = ({ color = "#64748b", size = 24 }: TabIconProps) => (
+  <Award size={size} color={color} strokeWidth={2.2} />
 );

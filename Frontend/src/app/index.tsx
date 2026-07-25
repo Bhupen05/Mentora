@@ -74,7 +74,7 @@ export default function Index() {
               ]}
             >
               <LottieView
-                source={require("../../assets/animations/Welcome.json")}
+                source={require("@/assets/animations/Welcome.json")}
                 autoPlay
                 loop
                 style={styles.lottieAnimation}

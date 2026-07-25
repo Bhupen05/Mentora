@@ -14,4 +14,12 @@ export {
   ProfileIcon,
   EarningsIcon,
   WalletIcon,
+  StudentsIcon,
+  ScheduleIcon,
+  MessagesIcon,
+  AnalyticsIcon,
+  GoalsIcon,
+  ProgressIcon,
+  ResourcesIcon,
+  AchievementsIcon,
 } from "./TabIcons";

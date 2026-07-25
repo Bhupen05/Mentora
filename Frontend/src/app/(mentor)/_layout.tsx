@@ -1,20 +1,30 @@
 /**
  * Mentor Stack Navigation
  * Tab navigation for mentor role
- * Routes: Dashboard, Earnings, Profile
+ * Routes: Dashboard, Workflow, Earnings, Profile, Students, Schedule, Messages, Analytics
  */
 
 import { Tabs } from "expo-router";
 import { StyleSheet } from "react-native";
 import { COLORS, SPACING } from "@/shared/theme";
-import { HomeIcon, EarningsIcon, ProfileIcon, CurvedTabBar } from "@/shared/components";
+import {
+  HomeIcon,
+  EarningsIcon,
+  ProfileIcon,
+  LessonsIcon,
+  StudentsIcon,
+  ScheduleIcon,
+  MessagesIcon,
+  AnalyticsIcon,
+  CurvedTabBar,
+} from "@/shared/components";
 
 export default function MentorLayout() {
   return (
     <Tabs
       tabBar={(props) => <CurvedTabBar {...props} />}
       screenOptions={{
-        headerShown: true,
+        headerShown: false,
         tabBarActiveTintColor: COLORS.primary,
         tabBarInactiveTintColor: COLORS.dark,
         headerStyle: styles.header,
@@ -28,8 +38,19 @@ export default function MentorLayout() {
         options={{
           title: "Dashboard",
           tabBarLabel: "Home",
-          headerTitle: "Dashboard",
           tabBarIcon: HomeIcon,
+        }}
+      />
+
+    
+
+      {/* Lessons Tab */}
+      <Tabs.Screen
+        name="lessons"
+        options={{
+          title: "Lessons",
+          tabBarLabel: "Lessons",
+          tabBarIcon: LessonsIcon,
         }}
       />
 
@@ -39,7 +60,6 @@ export default function MentorLayout() {
         options={{
           title: "Earnings",
           tabBarLabel: "Earnings",
-          headerTitle: "My Earnings",
           tabBarIcon: EarningsIcon,
         }}
       />
@@ -50,10 +70,41 @@ export default function MentorLayout() {
         options={{
           title: "Profile",
           tabBarLabel: "Profile",
-          headerTitle: "My Profile",
           tabBarIcon: ProfileIcon,
         }}
       />
+
+      {/* Students Tab */}
+      <Tabs.Screen
+        name="students"
+        options={{
+          title: "Students",
+          tabBarLabel: "Students",
+          tabBarIcon: StudentsIcon,
+        }}
+      />
+
+      {/* Schedule Tab */}
+      <Tabs.Screen
+        name="schedule"
+        options={{
+          title: "Schedule",
+          tabBarLabel: "Schedule",
+          tabBarIcon: ScheduleIcon,
+        }}
+      />
+
+      {/* Messages Tab */}
+      <Tabs.Screen
+        name="messages"
+        options={{
+          title: "Messages",
+          tabBarLabel: "Messages",
+          tabBarIcon: MessagesIcon,
+        }}
+      />
+
+    
     </Tabs>
   );
 }

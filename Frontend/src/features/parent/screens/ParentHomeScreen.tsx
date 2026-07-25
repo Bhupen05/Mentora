@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import {
 	Activity,
@@ -30,6 +30,8 @@ type StudentProgress = {
 	weeklyHours: number;
 	avgScore: number;
 	attendance: number;
+	studentImage: string | null;
+	initials: string;
 };
 
 type ActivityItem = {
@@ -51,6 +53,8 @@ export function ParentHomeScreen() {
 				weeklyHours: 6.5,
 				avgScore: 88,
 				attendance: 96,
+				studentImage: "https://i.pravatar.cc/150?img=13&u=emma-student",
+				initials: "EM",
 			},
 			{
 				id: "s2",
@@ -60,6 +64,8 @@ export function ParentHomeScreen() {
 				weeklyHours: 4.2,
 				avgScore: 81,
 				attendance: 91,
+				studentImage: "https://i.pravatar.cc/150?img=14&u=oliver-student",
+				initials: "OL",
 			},
 		],
 		[]
@@ -234,7 +240,14 @@ export function ParentHomeScreen() {
 				{students.map((student) => (
 					<Card key={student.id}>
 						<View style={styles.studentHeader}>
-							<View>
+							<View style={styles.studentAvatarWrap}>
+								{student.studentImage ? (
+									<Image source={{ uri: student.studentImage }} style={styles.studentAvatar} />
+								) : (
+									<Text style={styles.studentAvatarText}>{student.initials}</Text>
+								)}
+							</View>
+							<View style={{ flex: 1 }}>
 								<Text style={styles.studentName}>{student.name}</Text>
 								<Text style={styles.studentGrade}>{student.grade}</Text>
 							</View>
@@ -544,9 +557,28 @@ const styles = StyleSheet.create({
 	},
 	studentHeader: {
 		flexDirection: "row",
-		alignItems: "center",
+		alignItems: "flex-start",
 		justifyContent: "space-between",
-		gap: SPACING.sm,
+		gap: SPACING.base,
+	},
+	studentAvatarWrap: {
+		width: 44,
+		height: 44,
+		borderRadius: 22,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#e0e7ff",
+	},
+	studentAvatar: {
+		width: 44,
+		height: 44,
+		borderRadius: 22,
+	},
+	studentAvatarText: {
+		...TYPOGRAPHY.bodySmall,
+		color: COLORS.primaryDark,
+		fontWeight: "700",
+		fontSize: 11,
 	},
 	studentName: {
 		...TYPOGRAPHY.body,

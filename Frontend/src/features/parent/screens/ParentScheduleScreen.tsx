@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from "react-native";
 import { CalendarDays, Clock3, UserRound } from "lucide-react-native";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 import { Badge, Card } from "@/shared/components";
@@ -10,6 +10,8 @@ type ScheduleItem = {
 	id: string;
 	title: string;
 	student: string;
+	studentImage: string | null;
+	initials: string;
 	time: string;
 	dateLabel: string;
 	status: "Confirmed" | "Pending";
@@ -27,6 +29,8 @@ export function ParentScheduleScreen() {
 					id: "p-d-1",
 					title: "Math Revision",
 					student: "Ethan",
+					studentImage: null,
+					initials: "ET",
 					time: "4:00 PM - 5:00 PM",
 					dateLabel: "Today",
 					status: "Confirmed",
@@ -35,6 +39,8 @@ export function ParentScheduleScreen() {
 					id: "p-d-2",
 					title: "Science Practice",
 					student: "Ava",
+					studentImage: null,
+					initials: "AV",
 					time: "6:30 PM - 7:15 PM",
 					dateLabel: "Today",
 					status: "Pending",
@@ -45,6 +51,8 @@ export function ParentScheduleScreen() {
 					id: "p-w-1",
 					title: "English Writing",
 					student: "Ethan",
+					studentImage: null,
+					initials: "ET",
 					time: "Mon • 5:00 PM",
 					dateLabel: "This Week",
 					status: "Confirmed",
@@ -53,6 +61,8 @@ export function ParentScheduleScreen() {
 					id: "p-w-2",
 					title: "Coding Basics",
 					student: "Ava",
+					studentImage: null,
+					initials: "AV",
 					time: "Wed • 7:00 PM",
 					dateLabel: "This Week",
 					status: "Confirmed",
@@ -61,6 +71,8 @@ export function ParentScheduleScreen() {
 					id: "p-w-3",
 					title: "Physics Concepts",
 					student: "Ethan",
+					studentImage: null,
+					initials: "ET",
 					time: "Fri • 4:30 PM",
 					dateLabel: "This Week",
 					status: "Pending",
@@ -71,6 +83,8 @@ export function ParentScheduleScreen() {
 					id: "p-m-1",
 					title: "Exam Prep Block",
 					student: "Ethan",
+					studentImage: null,
+					initials: "ET",
 					time: "8 sessions",
 					dateLabel: "March",
 					status: "Confirmed",
@@ -79,6 +93,8 @@ export function ParentScheduleScreen() {
 					id: "p-m-2",
 					title: "Language Improvement",
 					student: "Ava",
+					studentImage: null,
+					initials: "AV",
 					time: "6 sessions",
 					dateLabel: "March",
 					status: "Confirmed",
@@ -131,7 +147,13 @@ export function ParentScheduleScreen() {
 					</View>
 
 					<View style={styles.metaRow}>
-						<UserRound size={14} color={COLORS.gray500} strokeWidth={2.2} />
+					<View style={styles.studentAvatarWrap}>
+						{item.studentImage ? (
+							<Image source={{ uri: item.studentImage }} style={styles.studentAvatar} />
+						) : (
+							<Text style={styles.studentAvatarText}>{item.initials}</Text>
+						)}
+					</View>
 						<Text style={styles.metaText}>{item.student}</Text>
 					</View>
 
@@ -249,6 +271,25 @@ const styles = StyleSheet.create({
 		flexDirection: "row",
 		alignItems: "center",
 		gap: SPACING.xs,
+	},
+	studentAvatarWrap: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#e0e7ff",
+	},
+	studentAvatar: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+	},
+	studentAvatarText: {
+		...TYPOGRAPHY.bodySmall,
+		color: COLORS.primaryDark,
+		fontWeight: "700",
+		fontSize: 11,
 	},
 	metaText: {
 		...TYPOGRAPHY.caption,

@@ -6,7 +6,9 @@ import {
 	ScrollView,
 	TextInput,
 	TouchableOpacity,
+	Image,
 } from "react-native";
+import { useRouter } from "expo-router";
 import { Search, SlidersHorizontal, Clock3, Star, BookOpen } from "lucide-react-native";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 import { Badge, Button, Card } from "@/shared/components";
@@ -27,6 +29,8 @@ type Lesson = {
 	rating: number;
 	price: number;
 	nextSlot: string;
+	mentorImage: string | null;
+	initials: string;
 };
 
 const FILTERS = ["All", "Math", "Science", "Programming", "Language"] as const;
@@ -44,6 +48,7 @@ const SORT_OPTIONS: { label: string; value: SortBy }[] = [
 ];
 
 export function ParentBrowseScreen() {
+	const router = useRouter();
 	const [searchQuery, setSearchQuery] = useState("");
 	const [selectedFilter, setSelectedFilter] = useState<(typeof FILTERS)[number]>("All");
 	const [selectedLessonType, setSelectedLessonType] = useState<(typeof LESSON_TYPE_FILTERS)[number]>(
@@ -60,6 +65,8 @@ export function ParentBrowseScreen() {
 				id: "l1",
 				title: "Algebra Problem Solving",
 				mentor: "Michael Lee",
+				mentorImage: "https://i.pravatar.cc/150?img=9&u=michael-lee",
+				initials: "ML",
 				subject: "Math",
 				duration: "45 mins",
 				level: "Intermediate",
@@ -72,6 +79,8 @@ export function ParentBrowseScreen() {
 				id: "l2",
 				title: "Physics Fundamentals",
 				mentor: "Hannah Carter",
+				mentorImage: "https://i.pravatar.cc/150?img=10&u=hannah-carter",
+				initials: "HC",
 				subject: "Science",
 				duration: "60 mins",
 				level: "Beginner",
@@ -83,7 +92,9 @@ export function ParentBrowseScreen() {
 			{
 				id: "l3",
 				title: "React for Students",
-				mentor: "Sarah Thompson",
+				mentor: "Samuel Torres",
+				mentorImage: "https://i.pravatar.cc/150?img=11&u=samuel-torres",
+				initials: "ST",
 				subject: "Programming",
 				duration: "60 mins",
 				level: "Advanced",
@@ -95,7 +106,9 @@ export function ParentBrowseScreen() {
 			{
 				id: "l4",
 				title: "English Writing Practice",
-				mentor: "Emily Dawson",
+				mentor: "Elena Davis",
+				mentorImage: "https://i.pravatar.cc/150?img=12&u=elena-davis",
+				initials: "ED",
 				subject: "Language",
 				duration: "40 mins",
 				level: "Beginner",
@@ -151,6 +164,24 @@ export function ParentBrowseScreen() {
 		selectedLevel !== "All" ||
 		selectedPriceFilter !== "All" ||
 		sortBy !== "Recommended";
+
+	const goToMentorProfile = (lesson: Lesson) => {
+		router.push({
+			pathname: "/(parent)/browse/[mentorId]" as any,
+			params: { mentorId: lesson.id },
+		});
+	};
+
+	const goToBooking = (lesson: Lesson) => {
+		router.push({
+			pathname: "/(parent)/browse/booking/[mentorId]" as any,
+			params: {
+				mentorId: lesson.id,
+				mentorName: lesson.mentor,
+				rate: String(lesson.price),
+			},
+		});
+	};
 
 	return (
 		<ScrollView style={styles.container} contentContainerStyle={styles.content}>
@@ -308,7 +339,16 @@ export function ParentBrowseScreen() {
 						/>
 					</View>
 
-					<Text style={styles.mentorText}>Mentor: {lesson.mentor}</Text>
+					<View style={styles.mentorRow}>
+						<View style={styles.mentorAvatarWrap}>
+							{lesson.mentorImage ? (
+								<Image source={{ uri: lesson.mentorImage }} style={styles.mentorAvatar} />
+							) : (
+								<Text style={styles.mentorAvatarText}>{lesson.initials}</Text>
+							)}
+						</View>
+						<Text style={styles.mentorText}>Mentor: {lesson.mentor}</Text>
+					</View>
 
 					<View style={styles.lessonMetaRow}>
 						<View style={styles.lessonMetaItem}>
@@ -325,8 +365,13 @@ export function ParentBrowseScreen() {
 					<Text style={styles.slotText}>Next slot: {lesson.nextSlot}</Text>
 
 					<View style={styles.actionsRow}>
-						<Button title="View Details" variant="outline" onPress={() => {}} style={styles.actionBtn} />
-						<Button title="Book Now" onPress={() => {}} style={styles.actionBtn} />
+						<Button
+							title="View Details"
+							variant="outline"
+							onPress={() => goToMentorProfile(lesson)}
+							style={styles.actionBtn}
+						/>
+						<Button title="Book Now" onPress={() => goToBooking(lesson)} style={styles.actionBtn} />
 					</View>
 				</Card>
 			))}
@@ -509,10 +554,34 @@ const styles = StyleSheet.create({
 		marginLeft: SPACING.xs,
 		flex: 1,
 	},
+	mentorRow: {
+		flexDirection: "row",
+		alignItems: "center",
+		marginTop: SPACING.sm,
+		gap: SPACING.sm,
+	},
+	mentorAvatarWrap: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+		alignItems: "center",
+		justifyContent: "center",
+		backgroundColor: "#e0e7ff",
+	},
+	mentorAvatar: {
+		width: 32,
+		height: 32,
+		borderRadius: 16,
+	},
+	mentorAvatarText: {
+		...TYPOGRAPHY.bodySmall,
+		color: COLORS.primaryDark,
+		fontWeight: "700",
+		fontSize: 11,
+	},
 	mentorText: {
 		...TYPOGRAPHY.caption,
 		color: COLORS.gray600,
-		marginTop: SPACING.sm,
 	},
 	lessonMetaRow: {
 		flexDirection: "row",

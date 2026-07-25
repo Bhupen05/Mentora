@@ -5,3 +5,5 @@ export { BookingScreen } from "./BookingScreen";
 export { MyLessonsScreen } from "./MyLessonsScreen";
 export { QuizScreen } from "./QuizScreen";
 export { ProfileScreen } from "./ProfileScreen";
+export { StudentResourcesScreen } from "./StudentResourcesScreen";
+export { StudentAchievementsScreen } from "./StudentAchievementsScreen";

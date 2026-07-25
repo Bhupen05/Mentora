@@ -7,9 +7,11 @@ type BadgeVariant = "primary" | "secondary" | "success" | "error" | "warning";
 interface BadgeProps {
   label: string;
   variant?: BadgeVariant;
+  backgroundColor?: string;
+  textColor?: string;
 }
 
-export function Badge({ label, variant = "primary" }: BadgeProps) {
+export function Badge({ label, variant = "primary", backgroundColor, textColor }: BadgeProps) {
   const variantStyles = {
     primary: styles.variantPrimary,
     secondary: styles.variantSecondary,
@@ -26,9 +28,12 @@ export function Badge({ label, variant = "primary" }: BadgeProps) {
     warning: COLORS.warning,
   };
 
+  const bgColor = backgroundColor || variantStyles[variant].backgroundColor;
+  const color = textColor || textColors[variant];
+
   return (
-    <View style={[styles.badge, variantStyles[variant]]}>
-      <Text style={[styles.text, { color: textColors[variant] }]}>
+    <View style={[styles.badge, { backgroundColor: bgColor }]}>
+      <Text style={[styles.text, { color }]}>
         {label}
       </Text>
     </View>

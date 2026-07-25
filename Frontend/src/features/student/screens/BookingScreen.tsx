@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   View,
   Text,
   StyleSheet,
@@ -8,25 +9,106 @@ import {
 } from "react-native";
 import { COLORS, SPACING, TYPOGRAPHY } from "@/shared/theme";
 import { Card, CardHeader, Button } from "@/shared/components";
+import { useLocalSearchParams, useRouter } from "expo-router";
+
+type SlotType = "individual" | "group";
+type BookingStatus = "idle" | "insufficient" | "failed" | "success" | "cancelled";
 
 export function BookingScreen() {
+  const router = useRouter();
+  const { mentorId, mentorName, rate } = useLocalSearchParams<{
+    mentorId?: string;
+    mentorName?: string;
+    rate?: string;
+  }>();
+
+  const parsedRate = Number(rate ?? "50") || 50;
   const [selectedDate, setSelectedDate] = useState("2024-03-20");
   const [selectedTime, setSelectedTime] = useState("14:00");
   const [duration, setDuration] = useState(60);
+  const [slotType, setSlotType] = useState<SlotType>("individual");
+  const [walletBalance, setWalletBalance] = useState(40);
+  const [bookingStatus, setBookingStatus] = useState<BookingStatus>("idle");
+  const [retryCount, setRetryCount] = useState(0);
 
   const upcomingDates = ["2024-03-20", "2024-03-21", "2024-03-22", "2024-03-23"];
   const timeSlots = ["10:00", "11:00", "14:00", "15:00", "16:00"];
   const durations = [30, 45, 60, 90, 120];
+  const totalCostNumber = Number(((duration / 60) * parsedRate).toFixed(2));
+  const totalCost = totalCostNumber.toFixed(2);
+  const slotAvailable = !(selectedDate === "2024-03-23" && selectedTime === "16:00");
 
   const handleConfirmBooking = () => {
-    console.log("Booking confirmed", { selectedDate, selectedTime, duration });
+    if (!slotAvailable) {
+      Alert.alert("Slot Unavailable", "Please choose another slot.");
+      return;
+    }
+
+    if (walletBalance < totalCostNumber) {
+      setBookingStatus("insufficient");
+      return;
+    }
+
+    if (retryCount === 0) {
+      setBookingStatus("failed");
+      setRetryCount((count) => count + 1);
+      return;
+    }
+
+    setWalletBalance((balance) => Number((balance - totalCostNumber).toFixed(2)));
+    setBookingStatus("success");
+  };
+
+  const handleAddFunds = () => {
+    setWalletBalance((balance) => balance + 100);
+    setBookingStatus("idle");
+  };
+
+  const handleRetryPayment = () => {
+    handleConfirmBooking();
+  };
+
+  const handleCancelBooking = () => {
+    setBookingStatus("cancelled");
   };
 
   return (
-    <ScrollView style={styles.container} showsVerticalScrollIndicator={false}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={styles.contentContainer}
+      showsVerticalScrollIndicator={false}
+    >
       <View style={styles.header}>
         <Text style={styles.title}>Book a Lesson</Text>
         <Text style={styles.subtitle}>Select date, time, and duration</Text>
+        <View style={styles.selectionPill}>
+          <Text style={styles.selectionPillText}>{selectedDate} • {selectedTime} • {duration}m • {slotType}</Text>
+        </View>
+        <Text style={styles.walletText}>Wallet: ${walletBalance.toFixed(2)}</Text>
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Slot Type</Text>
+        <View style={styles.slotTypeRow}>
+          <TouchableOpacity
+            style={[styles.slotTypeButton, slotType === "individual" && styles.slotTypeButtonActive]}
+            onPress={() => setSlotType("individual")}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.slotTypeButtonText, slotType === "individual" && styles.slotTypeButtonTextActive]}>
+              Individual
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.slotTypeButton, slotType === "group" && styles.slotTypeButtonActive]}
+            onPress={() => setSlotType("group")}
+            activeOpacity={0.8}
+          >
+            <Text style={[styles.slotTypeButtonText, slotType === "group" && styles.slotTypeButtonTextActive]}>
+              Group
+            </Text>
+          </TouchableOpacity>
+        </View>
       </View>
 
       {/* Date Selection */}
@@ -116,7 +198,7 @@ export function BookingScreen() {
 
       {/* Summary */}
       <Card style={styles.summaryCard}>
-        <CardHeader title="Booking Summary" />
+        <CardHeader title="Booking Summary" subtitle={mentorName ? `Mentor: ${mentorName}` : "Mentor selected"} />
         <View style={styles.summaryRow}>
           <Text style={styles.summaryLabel}>Date:</Text>
           <Text style={styles.summaryValue}>{selectedDate}</Text>
@@ -129,15 +211,65 @@ export function BookingScreen() {
           <Text style={styles.summaryLabel}>Duration:</Text>
           <Text style={styles.summaryValue}>{duration} minutes</Text>
         </View>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Slot:</Text>
+          <Text style={styles.summaryValue}>{slotType === "individual" ? "Individual" : "Group"}</Text>
+        </View>
+        <View style={styles.summaryRow}>
+          <Text style={styles.summaryLabel}>Availability:</Text>
+          <Text style={[styles.summaryValue, !slotAvailable && styles.unavailableText]}>
+            {slotAvailable ? "Available" : "Unavailable"}
+          </Text>
+        </View>
         <View style={[styles.summaryRow, styles.totalRow]}>
           <Text style={styles.summaryLabel}>Total Cost:</Text>
-          <Text style={styles.totalValue}>${(duration / 60) * 50}</Text>
+          <Text style={styles.totalValue}>${totalCost}</Text>
         </View>
       </Card>
 
       {/* CTA Buttons */}
       <View style={styles.buttonSection}>
-        <Button title="Confirm Booking" onPress={handleConfirmBooking} />
+        {bookingStatus === "idle" && (
+          <Button title="Confirm Booking" onPress={handleConfirmBooking} />
+        )}
+
+        {bookingStatus === "insufficient" && (
+          <>
+            <Card style={styles.statusCard}>
+              <Text style={styles.statusTitle}>Insufficient wallet balance</Text>
+              <Text style={styles.statusText}>Add funds to continue with this booking.</Text>
+            </Card>
+            <Button title="Add Funds (+$100)" onPress={handleAddFunds} />
+          </>
+        )}
+
+        {bookingStatus === "failed" && (
+          <>
+            <Card style={styles.statusCard}>
+              <Text style={styles.statusTitle}>Payment failed</Text>
+              <Text style={styles.statusText}>Retry payment or cancel this booking.</Text>
+            </Card>
+            <Button title="Retry Payment" onPress={handleRetryPayment} />
+            <Button title="Cancel Booking" variant="outline" style={styles.actionGap} onPress={handleCancelBooking} />
+          </>
+        )}
+
+        {bookingStatus === "success" && (
+          <>
+            <Card style={styles.statusCardSuccess}>
+              <Text style={styles.statusTitleSuccess}>Booking confirmed</Text>
+              <Text style={styles.statusTextSuccess}>Session reminder will be shown before start time.</Text>
+            </Card>
+            <Button title="Go to My Lessons" onPress={() => router.push("/(student)/lessons" as any)} />
+          </>
+        )}
+
+        {bookingStatus === "cancelled" && (
+          <Card style={styles.statusCard}>
+            <Text style={styles.statusTitle}>Booking cancelled</Text>
+            <Text style={styles.statusText}>You can choose a different slot anytime.</Text>
+          </Card>
+        )}
       </View>
     </ScrollView>
   );
@@ -148,10 +280,16 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: COLORS.light,
   },
+  contentContainer: {
+    paddingBottom: SPACING["6xl"],
+  },
   header: {
     paddingHorizontal: SPACING.base,
-    paddingVertical: SPACING.xl,
-    backgroundColor: COLORS.primary,
+    paddingTop: SPACING.xl,
+    paddingBottom: SPACING.lg,
+    backgroundColor: COLORS.primaryDark,
+    borderBottomLeftRadius: 24,
+    borderBottomRightRadius: 24,
   },
   title: {
     ...TYPOGRAPHY.h2,
@@ -161,6 +299,27 @@ const styles = StyleSheet.create({
     ...TYPOGRAPHY.body,
     color: "rgba(255, 255, 255, 0.8)",
     marginTop: SPACING.sm,
+  },
+  selectionPill: {
+    alignSelf: "flex-start",
+    marginTop: SPACING.base,
+    paddingHorizontal: SPACING.sm,
+    paddingVertical: SPACING.xs,
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 255, 255, 0.2)",
+    borderWidth: 1,
+    borderColor: "rgba(255, 255, 255, 0.35)",
+  },
+  selectionPillText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.white,
+    fontWeight: "700",
+  },
+  walletText: {
+    ...TYPOGRAPHY.caption,
+    color: "rgba(255, 255, 255, 0.9)",
+    marginTop: SPACING.sm,
+    fontWeight: "700",
   },
   section: {
     paddingHorizontal: SPACING.base,
@@ -182,6 +341,31 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: COLORS.gray300,
     marginRight: SPACING.sm,
+  },
+  slotTypeRow: {
+    flexDirection: "row",
+    gap: SPACING.sm,
+  },
+  slotTypeButton: {
+    flex: 1,
+    borderWidth: 1,
+    borderColor: COLORS.gray300,
+    borderRadius: 10,
+    paddingVertical: SPACING.sm,
+    alignItems: "center",
+    backgroundColor: COLORS.white,
+  },
+  slotTypeButtonActive: {
+    borderColor: COLORS.primary,
+    backgroundColor: "#e0e7ff",
+  },
+  slotTypeButtonText: {
+    ...TYPOGRAPHY.label,
+    color: COLORS.gray700,
+    fontWeight: "600",
+  },
+  slotTypeButtonTextActive: {
+    color: COLORS.primaryDark,
   },
   dateButtonActive: {
     backgroundColor: COLORS.primary,
@@ -260,6 +444,9 @@ const styles = StyleSheet.create({
     color: COLORS.dark,
     fontWeight: "600",
   },
+  unavailableText: {
+    color: COLORS.error,
+  },
   totalRow: {
     borderTopWidth: 1,
     borderTopColor: COLORS.gray300,
@@ -273,5 +460,39 @@ const styles = StyleSheet.create({
   buttonSection: {
     paddingHorizontal: SPACING.base,
     paddingVertical: SPACING.xl,
+    gap: SPACING.base,
+  },
+  actionGap: {
+    marginTop: SPACING.xs,
+  },
+  statusCard: {
+    borderWidth: 1,
+    borderColor: "#fde68a",
+    backgroundColor: "#fffbeb",
+  },
+  statusTitle: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.dark,
+    fontWeight: "700",
+  },
+  statusText: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.gray700,
+    marginTop: SPACING.xs,
+  },
+  statusCardSuccess: {
+    borderWidth: 1,
+    borderColor: "#86efac",
+    backgroundColor: "#ecfdf5",
+  },
+  statusTitleSuccess: {
+    ...TYPOGRAPHY.body,
+    color: COLORS.success,
+    fontWeight: "700",
+  },
+  statusTextSuccess: {
+    ...TYPOGRAPHY.caption,
+    color: COLORS.gray700,
+    marginTop: SPACING.xs,
   },
 });
